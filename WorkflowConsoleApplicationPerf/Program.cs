@@ -14,9 +14,9 @@ class Program
         var threadInput = Console.ReadLine();
         int threadCount = string.IsNullOrWhiteSpace(threadInput) ? 10 : int.Parse(threadInput);
 
-        Console.Write("Enter number of workflow instances (default 5): ");
+        Console.Write("Enter number of workflow Activity instances (default 1): ");
         var workflowInput = Console.ReadLine();
-        int workflowCount = string.IsNullOrWhiteSpace(workflowInput) ? 5 : int.Parse(workflowInput);
+        int workflowCount = string.IsNullOrWhiteSpace(workflowInput) ? 1 : int.Parse(workflowInput);
 
         Console.WriteLine($"\nConfiguration: {threadCount} threads, {workflowCount} workflow(s)\n");
 
@@ -38,7 +38,7 @@ class Program
                     </Assign.Value>
                 </Assign>
                 <WriteLine Text='[String.Format(&quot;Counter value: {0}&quot;, counter)]' />
-                <Delay Duration='00:00:00.1' />
+                <Delay Duration='[TimeSpan.FromMilliseconds(new Random().Next(0, 2000))]' />
                 <Assign>
                     <Assign.To>
                         <OutArgument x:TypeArguments='x:Int32'>[counter]</OutArgument>
@@ -64,7 +64,7 @@ class Program
         }
 
         Console.WriteLine($"Loaded {workflowCount} Activity instance(s) from XAML.");
-        Console.WriteLine("Testing state isolation across threads...\n");
+        Console.WriteLine("Testing state isolation across threads with random delays (0-2 seconds)...\n");
 
         // Execute Activity instances across multiple threads using WorkflowApplication
         var tasks = new Task[threadCount];
@@ -109,7 +109,7 @@ class Program
         Console.WriteLine("\n✓ All threads completed successfully!");
         Console.WriteLine("✓ Each thread had isolated state (counter always: 1, then 2).");
         Console.WriteLine($"✓ {workflowCount} Activity instance(s) safely reused across {threadCount} threads.");
-
+        Console.ReadLine();
         // Cleanup
         File.Delete("workflow.xaml");
     }

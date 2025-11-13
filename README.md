@@ -1,14 +1,21 @@
 ﻿# XAML Activity Thread Safety Test
 
+## The Core Question
+
+**Can a single `Activity` instance loaded from XAML be safely reused across multiple concurrent threads?**
+
+**Answer: YES.** This project proves it.
+
 ## The Facts
 
-1. **Activity objects are blueprints that can be reused across multiple workflow instances**
+1. **Activity objects are immutable blueprints that can be reused across multiple workflow instances**
    - Stack Overflow: "The activity object you get from deserializing a XAML document is just a blueprint of your workflow. It contains no state information, and so can be re-used as many times as you wish."
    - "Yes, you can definitely reuse the dynamic activity object you get back from the de-serialized XAML as many times as you wish. You can spin up as many WorkflowApplication objects using it as you please."
    - [Should I reuse a workflow definition?](https://stackoverflow.com/questions/46641328/should-i-reuse-a-workflow-definition)
 
 2. **WorkflowApplication creates isolated execution instances with separate state**
    - Microsoft: "WorkflowApplication acts as a thread safe proxy to the actual WorkflowInstance, which encapsulates the runtime"
+   - Each `WorkflowApplication` instance maintains its own execution state
    - [Using WorkflowInvoker and WorkflowApplication](https://learn.microsoft.com/en-us/dotnet/framework/windows-workflow-foundation/using-workflowinvoker-and-workflowapplication)
 
 3. **Variables and state are per-execution, never shared between instances**
@@ -16,51 +23,19 @@
    - From the same thread: The Activity object "contains no 'state' information of a running workflow"
    - [Should I reuse a workflow definition?](https://stackoverflow.com/questions/46641328/should-i-reuse-a-workflow-definition)
 
-## What This Does
+## What This Proves
 
-Loads Activity instances from XAML and executes them concurrently across multiple threads to prove state is not shared.
+This test demonstrates that `Activity` instances loaded from XAML can be safely reused across multiple concurrent threads without state interference.
 
-Each workflow:
+You can configure:
+- **Number of threads** (default: 10)
+- **Number of Activity instances** (default: 1)
+
+When using **1 Activity instance**, all threads share the **exact same** `Activity` object, proving it's truly thread-safe.
+
+Each workflow execution:
 - Has a `counter` variable (starts at 0)
 - Increments it twice (0→1→2)
-- Has a delay between increments (to expose potential race conditions)
+- Has a **random delay between 0-2 seconds** between increments (to maximize timing variance and expose race conditions if they existed)
 
-If state were shared, you'd see counter values > 2. You won't.
-
-## Run It
-
-```bash
-dotnet new console
-dotnet add package System.Activities
-# Copy Program.cs code
-dotnet run
-```
-
-Enter thread count and workflow instance count, or press Enter for defaults (10 threads, 5 instances).
-
-## Expected Output
-
-```
-Configuration: 10 threads, 5 workflow(s)
-
-Thread 0 starting (using Activity 0)...
-Thread 1 starting (using Activity 1)...
-Counter value: 1
-Final counter: 2
-Counter value: 1
-Final counter: 2
-...
-Thread 0 completed.
-
-✓ All threads completed successfully!
-✓ Each thread had isolated state (counter always: 1, then 2).
-```
-
-Every execution shows counter values of 1, then 2. Never 3, 4, 5, etc.
-
-## Why This Works
-
-- **Activity** = immutable workflow definition (shareable)
-- **WorkflowApplication** = runtime execution context (isolated per thread)
-
-Multiple WorkflowApplications can safely use the same Activity.
+**If state were shared across threads, you'd see counter values > 2 or race conditions. You won't.**
