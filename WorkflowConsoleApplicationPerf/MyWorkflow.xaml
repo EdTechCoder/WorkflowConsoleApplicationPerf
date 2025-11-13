@@ -11,6 +11,7 @@
     <sco:Collection x:TypeArguments="x:String">
       <x:String>System</x:String>
       <x:String>System.Threading</x:String>
+      <x:String>System.Activities</x:String>
     </sco:Collection>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
@@ -21,25 +22,39 @@
       <AssemblyReference>System.Memory</AssemblyReference>
       <AssemblyReference>System.ServiceModel</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Activities</AssemblyReference>
     </sco:Collection>
   </TextExpression.ReferencesForImplementation>
   <Sequence sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="beginThreadId" />
+    </Sequence.Variables>
+    <Assign>
+      <Assign.To>
+        <OutArgument x:TypeArguments="x:String">[beginThreadId]</OutArgument>
+      </Assign.To>
+      <Assign.Value>
+        <InArgument x:TypeArguments="x:String">[System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()]</InArgument>
+      </Assign.Value>
+      <sap2010:WorkflowViewState.IdRef>Assign_1</sap2010:WorkflowViewState.IdRef>
+    </Assign>
     <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_1" Text="[&quot;Start: &quot; &amp; System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()]" />
     <WriteLine sap2010:WorkflowViewState.IdRef="WriteLine_2" Text="[&quot;End: &quot; &amp; System.Threading.Thread.CurrentThread.ManagedThreadId.ToString()]" />
-    <sads:DebugSymbol.Symbol>d1dDOlxTb3VyY2VcV29ya2Zsb3dDb25zb2xlQXBwbGljYXRpb25QZXJmXFdvcmtmbG93Q29uc29sZUFwcGxpY2F0aW9uUGVyZlxNeVdvcmtmbG93LnhhbWwFGgMeDgIBARsFG6QBAgEEHAUcogECAQIbQxuhAQIBBRxDHJ8BAgED</sads:DebugSymbol.Symbol>
+    <sads:DebugSymbol.Symbol>d1dDOlxTb3VyY2VcV29ya2Zsb3dDb25zb2xlQXBwbGljYXRpb25QZXJmXFdvcmtmbG93Q29uc29sZUFwcGxpY2F0aW9uUGVyZlxNeVdvcmtmbG93LnhhbWwIHAMsDgIBASAFKA4CAQYpBSmkAQIBBCoFKqIBAgECJTAlcgIBCSIxIkACAQcpQymhAQIBBSpDKp8BAgED</sads:DebugSymbol.Symbol>
   </Sequence>
   <sap2010:WorkflowViewState.ViewStateManager>
     <sap2010:ViewStateManager>
-      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="210.4,62.4" />
-      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="210.4,62.4" />
-      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="232.8,289.6">
+      <sap2010:ViewStateData Id="Assign_1" sap:VirtualizedContainerService.HintSize="243.2,60" />
+      <sap2010:ViewStateData Id="WriteLine_1" sap:VirtualizedContainerService.HintSize="243.2,62.4" />
+      <sap2010:ViewStateData Id="WriteLine_2" sap:VirtualizedContainerService.HintSize="243.2,62.4" />
+      <sap2010:ViewStateData Id="Sequence_1" sap:VirtualizedContainerService.HintSize="265.6,389.6">
         <sap:WorkflowViewStateService.ViewState>
           <scg:Dictionary x:TypeArguments="x:String, x:Object">
             <x:Boolean x:Key="IsExpanded">True</x:Boolean>
           </scg:Dictionary>
         </sap:WorkflowViewStateService.ViewState>
       </sap2010:ViewStateData>
-      <sap2010:ViewStateData Id="MyWorkflow_1" sap:VirtualizedContainerService.HintSize="272.8,369.6" />
+      <sap2010:ViewStateData Id="MyWorkflow_1" sap:VirtualizedContainerService.HintSize="305.6,469.6" />
     </sap2010:ViewStateManager>
   </sap2010:WorkflowViewState.ViewStateManager>
 </Activity>
