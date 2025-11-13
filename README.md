@@ -2,16 +2,19 @@
 
 ## The Facts
 
-1. **Activity instances loaded from XAML are thread-safe templates** - They can be reused across multiple threads
-   - [Activity Class Documentation](https://learn.microsoft.com/en-us/dotnet/api/system.activities.activity)
-   - [Thread Safety in Workflow Foundation](https://learn.microsoft.com/en-us/dotnet/framework/windows-workflow-foundation/instance-stores)
+1. **Activity objects are blueprints that can be reused across multiple workflow instances**
+   - Stack Overflow: "The activity object you get from deserializing a XAML document is just a blueprint of your workflow. It contains no state information, and so can be re-used as many times as you wish."
+   - "Yes, you can definitely reuse the dynamic activity object you get back from the de-serialized XAML as many times as you wish. You can spin up as many WorkflowApplication objects using it as you please."
+   - [Should I reuse a workflow definition?](https://stackoverflow.com/questions/46641328/should-i-reuse-a-workflow-definition)
 
-2. **WorkflowApplication creates isolated execution state** - Each execution gets its own variables and state
-   - [WorkflowApplication Class](https://learn.microsoft.com/en-us/dotnet/api/system.activities.workflowapplication)
-   - [Workflow Execution Model](https://learn.microsoft.com/en-us/dotnet/framework/windows-workflow-foundation/overview)
+2. **WorkflowApplication creates isolated execution instances with separate state**
+   - Microsoft: "WorkflowApplication acts as a thread safe proxy to the actual WorkflowInstance, which encapsulates the runtime"
+   - [Using WorkflowInvoker and WorkflowApplication](https://learn.microsoft.com/en-us/dotnet/framework/windows-workflow-foundation/using-workflowinvoker-and-workflowapplication)
 
-3. **No state is shared between executions** - Even when using the same Activity instance
-   - [Variable and Argument Best Practices](https://learn.microsoft.com/en-us/dotnet/framework/windows-workflow-foundation/variable-and-argument-tracking)
+3. **Variables and state are per-execution, never shared between instances**
+   - Stack Overflow: "the workflow variables don't seem to be shared between workflow instances"
+   - From the same thread: The Activity object "contains no 'state' information of a running workflow"
+   - [Should I reuse a workflow definition?](https://stackoverflow.com/questions/46641328/should-i-reuse-a-workflow-definition)
 
 ## What This Does
 
